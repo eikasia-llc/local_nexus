@@ -16,6 +16,18 @@
 *   **Zero-Copying**: Uses DuckDB's direct querying capabilities to minimize data duplication.
 *   **Telemetery**: Logs interactions to train future Reinforcement Learning models (Phase 3).
 
+## Data Ingestion Pipeline
+- status: active
+- type: context
+<!-- content -->
+This section describes how the Local Warehouse processes raw information.
+*   **Supported Formats**: CSV (`.csv`), Excel (`.xls`, `.xlsx`). *JSON support is planned for Phase 2.*
+*   **Process Flow**:
+    1.  **Deduplication**: Calculates a SHA-256 hash of the file content. If the hash exists, upload is skipped.
+    2.  **Normalization**: Uses **Pandas** to infer data types (Integers, Floats, Timestamps) and create a structured DataFrame.
+    3.  **Sanitization**: Column names are converted to SQL-friendly `snake_case` (e.g., "Order Date" -> `order_date`).
+    4.  **Persistence**: The DataFrame is serialized directly into a native **DuckDB** table. This is an automatic relational transformation.
+
 ## Deployment Modes
 - status: active
 - type: context
