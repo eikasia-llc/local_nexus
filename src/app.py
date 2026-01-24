@@ -37,5 +37,11 @@ def main():
     render_sidebar()
     render_chat()
 
+import traceback
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        st.error("An error occurred during application startup:")
+        st.code(traceback.format_exc())
