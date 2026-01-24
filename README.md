@@ -16,6 +16,23 @@
 *   **Zero-Copying**: Uses DuckDB's direct querying capabilities to minimize data duplication.
 *   **Telemetery**: Logs interactions to train future Reinforcement Learning models (Phase 3).
 
+## Deployment Modes
+- status: active
+- type: context
+<!-- content -->
+
+### 1. Local Mode (Privacy-First)
+This is the intended production environment for Phase 1.
+*   **Host**: Your local machine (localhost).
+*   **Storage**: Your local hard drive (`data/warehouse.db`).
+*   **Privacy**: Data **never** leaves your computer. The "Cloud" components (Phase 3) will only receive anonymized or specific queries you explicitly approve.
+
+### 2. Cloud Demo (Public)
+This is for demonstration and UI testing only.
+*   **Host**: Streamlit Community Cloud.
+*   **Storage**: Ephemeral. Any file you upload is deleted when the app reboots (which happens frequently).
+*   **Privacy**: Not suitable for sensitive client data in this configuration.
+
 ## Directory Structure
 - status: active
 - type: context
