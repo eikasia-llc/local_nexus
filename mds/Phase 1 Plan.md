@@ -48,20 +48,21 @@ Establish the repository structure to support modular growth into Phases 2 and 3
 ```
 
 ## Module 1: The Local Data Warehouse
-- status: todo
+- status: done
 - type: task
 - id: implementation.phase1.warehouse
 - blocked_by: [implementation.phase1.init]
 - estimate: 1w
-- last_checked: 2026-01-24T08:35:00+01:00
+- last_checked: 2026-01-24T11:45:00+01:00
+- context_dependencies: { "log": "Module 1 Local Data Warehouse.md" }
 <!-- content -->
 Implement the persistence layer using DuckDB. This is the "Long-Term Memory" of the system.
 
 ### Database Manager Class
-- status: todo
+- status: done
 - type: task
 - id: implementation.phase1.warehouse.manager
-- last_checked: 2026-01-24T08:35:00+01:00
+- last_checked: 2026-01-24T11:45:00+01:00
 <!-- content -->
 Create a DatabaseManager class in src/core/database.py.
 
@@ -84,11 +85,11 @@ Create a DatabaseManager class in src/core/database.py.
 * **Methods**: `get_connection()`, `execute_query()`, `get_table_schema()`.
 
 ### Ingestion Service
-- status: todo
+- status: done
 - type: task
 - id: implementation.phase1.warehouse.ingest
 - blocked_by: [implementation.phase1.warehouse.manager]
-- last_checked: 2026-01-24T08:35:00+01:00
+- last_checked: 2026-01-24T11:45:00+01:00
 <!-- content -->
 Create logic to handle user file uploads.
 
@@ -99,20 +100,21 @@ Create logic to handle user file uploads.
 5. **Versioning**: Calculate a content hash (SHA-256) of the file. If the hash exists, skip; if the filename exists but hash differs, create a new version (e.g., `sales_data_v2`).
 
 ## Module 2: The Chat Interface
-- status: todo
+- status: done
 - type: task
 - id: implementation.phase1.ui
 - blocked_by: [implementation.phase1.warehouse]
 - estimate: 1w
-- last_checked: 2026-01-24T08:35:00+01:00
+- last_checked: 2026-01-24T11:45:00+01:00
+- context_dependencies: { "log": "Module 2 The Chat Interface.md" }
 <!-- content -->
 Implement the Streamlit frontend.
 
 ### Layout & Session State
-- status: todo
+- status: done
 - type: task
 - id: implementation.phase1.ui.layout
-- last_checked: 2026-01-24T08:35:00+01:00
+- last_checked: 2026-01-24T11:45:00+01:00
 <!-- content -->
 * **Sidebar**: "Data Management". A file uploader widget and a list of currently available tables in DuckDB.
 * **Main Area**: Chat container.
@@ -122,11 +124,11 @@ Implement the Streamlit frontend.
   * `user_identity`: Dict `{'id': 'local-dev', 'role': 'admin'}` (Mock for Phase 2 Auth).
 
 ### Chat Logic & Mock Orchestrator
-- status: todo
+- status: done
 - type: task
 - id: implementation.phase1.ui.chat
 - blocked_by: [implementation.phase1.ui.layout]
-- last_checked: 2026-01-24T08:35:00+01:00
+- last_checked: 2026-01-24T11:45:00+01:00
 <!-- content -->
 Since the Cloud Agents (Phase 3) are not ready, build a **Local Loopback** for testing.
 
