@@ -18,7 +18,16 @@ def render_sidebar():
 
         st.divider()
         
-        # Available Tables (Mock for now, easy to wire up to DB)
+        # Available Tables
         st.subheader("Active Tables")
-        # In a real scenario, query `metadata_registry` here
-        st.info("No tables loaded.")
+        
+        db = IngestionService().db # Access the singleton DB via the service or directly
+        tables = db.get_active_tables()
+        
+        if not tables:
+            st.info("No tables loaded.")
+        else:
+            for filename, rows, _ in tables:
+                with st.expander(f"📄 {filename}"):
+                    st.caption(f"Rows: {rows}")
+                    st.button("Preview", key=f"btn_{filename}", help="Preview not implemented yet")

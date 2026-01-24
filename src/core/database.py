@@ -49,6 +49,13 @@ class DatabaseManager:
         """Executes a SQL query and returns the result."""
         return self.conn.sql(query)
     
+    def get_active_tables(self):
+        """Returns list of registered tables: [(filename, row_count, file_hash), ...]."""
+        try:
+            return self.conn.execute("SELECT filename, row_count, file_hash FROM metadata_registry ORDER BY upload_timestamp DESC").fetchall()
+        except duckdb.CatalogException:
+            return []
+
     def register_file(self, filename: str, file_hash: str, row_count: int):
         """Registers a new file in the metadata registry."""
         file_id = str(uuid.uuid4())
