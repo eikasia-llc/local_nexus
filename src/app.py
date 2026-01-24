@@ -1,8 +1,18 @@
 import sys
 import os
 
-# Add the project root directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+# Robustly find the project root
+# If __file__ is src/app.py, then dirname is src, and dirname(dirname) is root
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+# DEBUG: Print paths to helps us see what's wrong in Cloud logs if it fails again
+print(f"DEBUG: Current Directory: {current_dir}")
+print(f"DEBUG: Project Root: {project_root}")
+print(f"DEBUG: sys.path: {sys.path}")
 
 import streamlit as st
 from src.components.sidebar import render_sidebar
