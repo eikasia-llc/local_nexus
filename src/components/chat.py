@@ -1,13 +1,17 @@
 import streamlit as st
 import pandas as pd
 
+import os
 from src.core.database import DatabaseManager
 
 def render_chat():
     st.header("Local Nexus Intelligence")
     
     # Check for Cloud/Memory mode
-    if DatabaseManager().is_in_memory:
+    # Streamlit Cloud mounts repos at /mount/src/...
+    is_cloud_path = "/mount/src" in os.path.abspath(__file__)
+    
+    if DatabaseManager().is_in_memory or is_cloud_path:
         st.warning("⚠️ **Cloud Demo Mode**: This instance is running on ephemeral cloud storage. Data will be lost on reboot. For production use, run locally.")
 
     # Display chat messages
