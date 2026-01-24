@@ -6,7 +6,7 @@ def render_sidebar():
         st.title("Data Management")
         
         # File Uploader
-        uploaded_file = st.file_uploader("Upload CSV or Excel", type=['csv', 'xlsx'])
+        uploaded_file = st.file_uploader("Upload CSV, Excel, or JSON", type=['csv', 'xlsx', 'json'])
         if uploaded_file is not None:
             if st.button("Ingest Data"):
                 service = IngestionService()

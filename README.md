@@ -21,7 +21,7 @@
 - type: context
 <!-- content -->
 This section describes how the Local Warehouse processes raw information.
-*   **Supported Formats**: CSV (`.csv`), Excel (`.xls`, `.xlsx`). *JSON support is planned for Phase 2.*
+*   **Supported Formats**: CSV (`.csv`), Excel (`.xls`, `.xlsx`), JSON (`.json`).
 *   **Process Flow**:
     1.  **Deduplication**: Calculates a SHA-256 hash of the file content. If the hash exists, upload is skipped.
     2.  **Normalization**: Uses **Pandas** to infer data types (Integers, Floats, Timestamps) and create a structured DataFrame.

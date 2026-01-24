@@ -27,6 +27,8 @@ class IngestionService:
             df = pd.read_csv(uploaded_file)
         elif filename.endswith(('.xls', '.xlsx')):
             df = pd.read_excel(uploaded_file)
+        elif filename.endswith('.json'):
+            df = pd.read_json(uploaded_file)
         else:
             return False, "Unsupported file format."
 
