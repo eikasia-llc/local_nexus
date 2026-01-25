@@ -1,7 +1,7 @@
 # Housekeeping Protocol
 - status: active
 - type: recurring
-- context_dependencies: { "conventions": "../MD_CONVENTIONS.md", "setup": "PROJECT_SETUP.md" }
+- context_dependencies: { "conventions": "../MD_CONVENTIONS.md", "setup": "PROJECT_SETUP.md", "log": "AGENTS_LOG.md", "agents": "../AGENTS.md" }
 <!-- content -->
 1.  **Read AGENTS.md**: Ensure you align with the latest agent behaviors.
 2.  **Verify Dependency Network**: Check import consistency in `src/`.

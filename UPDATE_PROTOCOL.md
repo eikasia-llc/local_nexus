@@ -2,7 +2,7 @@
 - id: protocol.update
 - status: active
 - type: protocol
-- context_dependencies: {"conventions": "MD_CONVENTIONS.md", "project_root": "README.md"}
+- context_dependencies: { "conventions": "MD_CONVENTIONS.md", "project_root": "README.md", "log": "mds/AGENTS_LOG.md" }
 - last_checked: 2026-01-25
 <!-- content -->
 This protocol defines the standard procedure for **learning from experience** and systematically updating the codebase, agents, and instructions. It transforms ad-hoc bug fixes into permanent system improvements.

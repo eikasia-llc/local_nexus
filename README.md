@@ -1,6 +1,6 @@
 - status: active
 - type: context
-- context_dependencies: { "conventions": "MD_CONVENTIONS.md", "setup": "mds/PROJECT_SETUP.md", "master_plan": "mds/MASTER_PLAN.md" }
+- context_dependencies: { "conventions": "MD_CONVENTIONS.md", "setup": "mds/PROJECT_SETUP.md", "master_plan": "mds/MASTER_PLAN.md", "agents": "AGENTS.md" }
 <!-- content -->
 
 **Local Nexus** is the client-side application for the Intelligent Control SaaS. It serves as a privacy-first Data Warehouse and an AI-powered interface for Small and Medium Businesses (SMBs) to analyze their operations.

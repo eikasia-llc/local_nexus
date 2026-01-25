@@ -1,7 +1,7 @@
 # Project Setup Guide: Local Nexus (Phase 1)
 - status: active
 - type: guideline
-- context_dependencies: { "plan": "Phase 1 Plan.md", "master_plan": "MASTER_PLAN.md", "conventions": "../MD_CONVENTIONS.md" }
+- context_dependencies: { "plan": "Phase 1 Plan.md", "master_plan": "MASTER_PLAN.md", "conventions": "../MD_CONVENTIONS.md", "agents": "../AGENTS.md", "housekeeping": "HOUSEKEEPING.md" }
 <!-- content -->
 > **Purpose:** Instructions for initializing and running the Local Nexus application (Phase 1), which serves as a local data warehouse and chat interface.
 

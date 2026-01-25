@@ -4,7 +4,7 @@
 - id: implementation.phase1.warehouse.log
 - owner: user
 - last_checked: 2026-01-24T11:45:00+01:00
-- context_dependencies: { "plan": "Phase 1 Plan.md", "ingestion": "../src/core/ingestion.py" }
+- context_dependencies: { "plan": "Phase 1 Plan.md", "ingestion": "../src/core/ingestion.py", "database": "../src/core/database.py", "conventions": "../MD_CONVENTIONS.md" }
 <!-- content -->
 
 ## Overview

@@ -4,7 +4,7 @@
 - id: implementation.phase1.ui.log
 - owner: user
 - last_checked: 2026-01-24T11:45:00+01:00
-- context_dependencies: { "plan": "Phase 1 Plan.md", "app": "../src/app.py" }
+- context_dependencies: { "plan": "Phase 1 Plan.md", "app": "../src/app.py", "sidebar": "../src/components/sidebar.py", "chat": "../src/components/chat.py", "conventions": "../MD_CONVENTIONS.md" }
 <!-- content -->
 
 ## Overview
