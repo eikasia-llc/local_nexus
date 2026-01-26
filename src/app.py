@@ -17,8 +17,12 @@ print(f"DEBUG: sys.path: {sys.path}")
 import streamlit as st
 from src.components.sidebar import render_sidebar
 from src.components.chat import render_chat
+from src.core.llm import init_gemini
 
 def main():
+    # Initialize Gemini
+    init_gemini()
+    
     st.set_page_config(
         page_title="Local Nexus",
         page_icon="🧠",

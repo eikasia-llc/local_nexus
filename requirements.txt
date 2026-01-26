@@ -4,3 +4,5 @@ pandas
 openpyxl
 pydantic
 pytest
+google-generativeai
+python-dotenv

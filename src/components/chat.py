@@ -28,15 +28,11 @@ def render_chat():
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Mock Response (Phase 1 Loopback)
+        # Real Gemini Response
         with st.chat_message("assistant"):
-            response_text = f"Analyzed: {prompt} (Mock Response)"
+            with st.spinner("Thinking..."):
+                from src.core.llm import get_gemini_response
+                response_text = get_gemini_response(st.session_state.messages)
+                
             st.markdown(response_text)
-            
-            # Simple mock data response if "show" is in prompt
-            if "show" in prompt.lower():
-                mock_data = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
-                st.dataframe(mock_data)
-                st.session_state.messages.append({"role": "assistant", "content": response_text, "data": mock_data})
-            else:
-                st.session_state.messages.append({"role": "assistant", "content": response_text})
+            st.session_state.messages.append({"role": "assistant", "content": response_text})
