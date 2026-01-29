@@ -255,10 +255,12 @@ MCP Server for structured data tools:
 - [x] Integrate all retrieval paths
 - [x] Test: end-to-end queries
 
-### Phase 5: UI + MCP (2h)
-- [ ] Modify `src/app.py` for document upload
-- [ ] Create `src/mcp/` directory and server
-- [ ] Test: full workflow in Streamlit
+### Phase 5: UI + MCP (2h) ✅
+- [x] Modify `src/app.py` for document upload
+- [x] Create `src/mcp/` directory and server (12 tools)
+- [x] Update `src/components/sidebar.py` with Tables/Documents/Graph tabs
+- [x] Update `src/components/chat.py` with Unified Engine integration
+- [x] Test: full workflow in Streamlit
 
 ---
 

@@ -3,18 +3,66 @@
 - context_dependencies: { "conventions": "MD_CONVENTIONS.md", "setup": "mds/PROJECT_SETUP.md", "master_plan": "mds/MASTER_PLAN.md", "agents": "AGENTS.md" }
 <!-- content -->
 
-**Local Nexus** is the client-side application for the Intelligent Control SaaS. It serves as a privacy-first Data Warehouse and an AI-powered interface for Small and Medium Businesses (SMBs) to analyze their operations.
+**Local Nexus** is a privacy-first **Unified Intelligence Platform** that combines a **Data Warehouse** (DuckDB) with **RAG** (Retrieval-Augmented Generation) and an **Institutional Graph** to answer complex questions requiring both computation and semantic understanding.
 
-> **Phase 1 Status**: This project is currently in **Phase 1 (Local Data Warehouse)**. It focuses on ingesting CSV/Excel files into a local DuckDB instance and providing a chat interface via Streamlit.
+> **Architecture**: Built on the **TAG (Table-Augmented Generation)** paradigm from Berkeley/Databricks research, unifying structured SQL queries with semantic document search.
 
-## Features
+## Unified Nexus Architecture
 - status: active
 - type: context
 <!-- content -->
-*   **Local Data Warehouse**: Ingests raw Excel/CSV files and structure them into a high-performance **DuckDB** database (`data/warehouse.db`).
-*   **Chat Interface**: A **Streamlit**-based chat UI that allows users to query their data in natural language (simulation/mock in Phase 1).
-*   **Zero-Copying**: Uses DuckDB's direct querying capabilities to minimize data duplication.
-*   **Telemetery**: Logs interactions to train future Reinforcement Learning models (Phase 3).
+
+```
+                          ┌─────────────────────────────────────┐
+                          │           User Question             │
+                          └──────────────┬──────────────────────┘
+                                         │
+                                         ▼
+                          ┌─────────────────────────────────────┐
+                          │         Query Router (LLM)          │
+                          │  Classifies: structured/unstructured│
+                          │              /hybrid                │
+                          └──────────────┬──────────────────────┘
+                                         │
+              ┌──────────────────────────┼──────────────────────────┐
+              │                          │                          │
+              ▼                          ▼                          ▼
+    ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+    │   Vector Store  │      │    DuckDB       │      │   Graph Store   │
+    │   (ChromaDB)    │      │  (Text2SQL)     │      │ (Relationships) │
+    └────────┬────────┘      └────────┬────────┘      └────────┬────────┘
+             │                        │                        │
+             └────────────────────────┼────────────────────────┘
+                                      │
+                                      ▼
+                          ┌─────────────────────────────────────┐
+                          │     Context Assembly & Generation   │
+                          └─────────────────────────────────────┘
+```
+
+## Key Features
+- status: active
+- type: context
+<!-- content -->
+
+| Feature | Description |
+|:--------|:------------|
+| **Query Routing** | Automatically classifies questions as structured (SQL), unstructured (RAG), or hybrid |
+| **Text2SQL** | Converts natural language to DuckDB SQL with schema introspection |
+| **Smart Retrieval** | Query decomposition for complex multi-part questions with LRU caching |
+| **Batch Vector Search** | 82% latency reduction via parallel ChromaDB queries |
+| **Institutional Graph** | Relationship traversal for organizational context |
+| **MCP Server** | 12 tools for programmatic agent access |
+
+## Core Capabilities
+- status: active
+- type: context
+<!-- content -->
+*   **Data Warehouse (DuckDB)**: Ingests CSV/Excel/JSON into tables for SQL aggregations, joins, and filters.
+*   **Document Search (ChromaDB)**: Semantic search over TXT, MD, PDF, DOCX files for policies and concepts.
+*   **Graph Store**: Relationship traversal for organizational hierarchies and entity connections.
+*   **Unified Engine**: Routes queries to appropriate source(s) and synthesizes answers.
+*   **MCP Integration**: Expose all capabilities as agent tools via Model Context Protocol.
 
 ## Data Ingestion Pipeline
 - status: active
@@ -52,15 +100,29 @@ This is for demonstration and UI testing only.
 ```
 local_nexus/
 ├── src/
-│   ├── app.py                # Main Entry Point
-│   ├── core/                 # Backend Logic (Database, Ingestion)
-│   ├── components/           # UI Components (Sidebar, Chat)
-│   └── utils/                # Utilities (Logging)
-├── data/                     # Local Storage (Gitignored)
-├── mds/                      # Project Documentation & Plans
-├── tests/                    # Unit Tests
-├── MD_CONVENTIONS.md         # Schema Specifications
-└── AGENTS.md                 # Agent Instructions
+│   ├── app.py                     # Main Streamlit Entry Point
+│   ├── core/
+│   │   ├── unified_engine.py      # Query routing + context assembly
+│   │   ├── query_router.py        # STRUCTURED/UNSTRUCTURED/HYBRID classification
+│   │   ├── text2sql.py            # Natural language → DuckDB SQL
+│   │   ├── vector_store.py        # ChromaDB semantic search
+│   │   ├── graph_store.py         # Institutional relationships
+│   │   ├── document_ingestion.py  # TXT/MD/PDF/DOCX processing
+│   │   ├── database.py            # DuckDB connection management
+│   │   └── ingestion.py           # CSV/Excel/JSON → DuckDB
+│   ├── mcp/
+│   │   ├── __init__.py
+│   │   └── server.py              # MCP Server (12 agent tools)
+│   ├── components/                # UI Components (Sidebar, Chat)
+│   └── utils/                     # Utilities (Logging)
+├── data/                          # Local Storage (Gitignored)
+│   ├── warehouse.db               # DuckDB database
+│   ├── vectordb/                  # ChromaDB persistence
+│   └── graph/                     # Graph store JSON files
+├── mds/                           # Project Documentation & Plans
+├── tests/                         # Unit Tests (114 tests)
+├── MD_CONVENTIONS.md              # Schema Specifications
+└── AGENTS.md                      # Agent Instructions
 ```
 
 ## Getting Started
