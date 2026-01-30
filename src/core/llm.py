@@ -5,21 +5,23 @@ from dotenv import load_dotenv
 DEFAULT_MODEL = "gemini-2.0-flash-lite"
 
 def init_gemini():
-    """Initializes the Gemini API with the key from environment variables or Streamlit secrets."""
-    # 1. Try environment variables
+    """Initializes the Gemini API with priority: Streamlit secrets > Environment variables."""
     load_dotenv()
-    api_key = os.getenv("GEMINI_API_KEY")
     
-    # 2. Try Streamlit secrets (if available)
+    # 1. Try Streamlit secrets first (Priority for deployment/config)
+    api_key = None
+    try:
+        import streamlit as st
+        api_key = st.secrets.get("GEMINI_API_KEY")
+    except (ImportError, FileNotFoundError):
+        pass
+
+    # 2. Fallback to Environment variables
     if not api_key:
-        try:
-            import streamlit as st
-            api_key = st.secrets.get("GEMINI_API_KEY")
-        except (ImportError, FileNotFoundError):
-            pass
+        api_key = os.getenv("GEMINI_API_KEY")
 
     if not api_key:
-        print("Warning: GEMINI_API_KEY not found in environment or secrets.")
+        print("Warning: GEMINI_API_KEY not found in secrets or environment.")
         return False
     
     genai.configure(api_key=api_key)
