@@ -3,56 +3,71 @@ import os
 from src.core.database import DatabaseManager
 
 
-def get_unified_engine():
-    """Get or create the unified engine instance."""
-    if "unified_engine" not in st.session_state or st.session_state.unified_engine is None:
+@st.cache_resource
+def get_db_connection():
+    """Cached database connection."""
+    return DatabaseManager().get_connection()
+
+@st.cache_resource
+def get_vector_store():
+    """Cached vector store."""
+    from src.core.vector_store import VectorStore
+    return VectorStore(db_path="data/vectordb")
+
+@st.cache_resource
+def get_graph_store():
+    """Cached graph store."""
+    from src.core.graph_store import InstitutionalGraph
+    return InstitutionalGraph(storage_path="data/graph")
+
+@st.cache_resource
+def get_llm_func():
+    """Cached LLM function."""
+    import google.generativeai as genai
+    from src.core.llm import init_gemini
+    if init_gemini():
+        def gemini_call(prompt: str) -> str:
+            model = genai.GenerativeModel('gemini-flash-latest')
+            response = model.generate_content(prompt)
+            return response.text
+        return gemini_call
+    return None
+
+@st.cache_resource(show_spinner="Initializing Unified Engine...")
+def get_engine_instance():
+    """Cached Unified Engine instance."""
+    try:
+        from src.core.unified_engine import UnifiedEngine
+        
+        # Get components (cached automatically by their own decorators)
+        db_conn = get_db_connection()
         try:
-            from src.core.unified_engine import UnifiedEngine
-            from src.core.llm import init_gemini
-
-            # Initialize database
-            db = DatabaseManager()
-
-            # Initialize vector store (optional)
+            vector_store = get_vector_store()
+        except Exception:
             vector_store = None
-            try:
-                from src.core.vector_store import VectorStore
-                vector_store = VectorStore(db_path="data/vectordb")
-            except ImportError:
-                pass
-
-            # Initialize graph store (optional)
+            
+        try:
+            graph_store = get_graph_store()
+        except Exception:
             graph_store = None
-            try:
-                from src.core.graph_store import InstitutionalGraph
-                graph_store = InstitutionalGraph(storage_path="data/graph")
-            except Exception:
-                pass
+            
+        llm_func = get_llm_func()
 
-            # Initialize LLM
-            llm_func = None
-            try:
-                import google.generativeai as genai
-                if init_gemini():
-                    def gemini_call(prompt: str) -> str:
-                        model = genai.GenerativeModel('gemini-flash-latest')
-                        response = model.generate_content(prompt)
-                        return response.text
-                    llm_func = gemini_call
-            except ImportError:
-                pass
+        engine = UnifiedEngine(
+            vector_store=vector_store,
+            db_connection=db_conn,
+            graph_store=graph_store,
+            llm_func=llm_func
+        )
+        print("DEBUG: UnifiedEngine initialized successfully (Cached).")
+        return engine
+    except Exception as e:
+        print(f"ERROR: UnifiedEngine initialization failed: {e}")
+        return None
 
-            st.session_state.unified_engine = UnifiedEngine(
-                vector_store=vector_store,
-                db_connection=db.get_connection(),
-                graph_store=graph_store,
-                llm_func=llm_func
-            )
-
-        except Exception as e:
-            st.session_state.unified_engine = None
-
-    return st.session_state.unified_engine
+def get_unified_engine():
+    """Wrapper to get the cached engine."""
+    return get_engine_instance()
 
 
 def render_chat():
