@@ -97,7 +97,21 @@ ChromaDB was selected for this implementation, but these alternatives are docume
 | **LanceDB** | Columnar, fast, embedded | Newer ecosystem | High-volume analytics |
 | **pgvector** | SQL integration, familiar | Requires PostgreSQL | Consolidating to Postgres |
 | **Pinecone** | Managed, scalable, reliable | Cloud-only, costs money | Enterprise scale |
+| **Pinecone** | Managed, scalable, reliable | Cloud-only, costs money | Enterprise scale |
 | **Weaviate** | GraphQL, rich features | Heavier setup | Complex schema needs |
+
+### System Resilience & Error Handling
+- status: active
+- type: protocol
+- id: unified-nexus.architecture.resilience
+<!-- content -->
+> [!WARNING]
+> **Internal Blocking Risk**: In a unified system, a failure in one component (e.g., VectorStore initialization) must not crash the entire application. 
+> 
+> **Architectural Constraint**: 
+> - Lazy loading is preferred for heavy components.
+> - **Initialization Retries**: The UI must handle "soft failures" by allowing components to re-initialize on subsequent interactions rather than caching a permanent `None` state.
+> - **Isolated Scope**: Component errors should be trapped at the component boundary to prevent propagating effectively "blocking" states to the UI event loop.
 
 ## Implementation Plan
 - status: active

@@ -185,3 +185,10 @@ This project uses the **Markdown-JSON Hybrid Schema**.
 *   **[MD_CONVENTIONS.md](MD_CONVENTIONS.md)**: The schema specification.
 *   **[AGENTS.md](AGENTS.md)**: Operational guidelines for AI Agents.
 *   **[mds/PROJECT_SETUP.md](mds/PROJECT_SETUP.md)**: Setup and installation guide.
+
+## Known Issues
+- status: active
+- type: log
+<!-- content -->
+> [!IMPORTANT]
+> **Initialization Blocking**: Internal component initialization (e.g., VectorStore, Engine) can block the entire chat flow if exceptions occur. The system has been patched to retry initialization, but check the console logs if the chat remains unresponsive.

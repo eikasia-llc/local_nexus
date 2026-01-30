@@ -61,3 +61,15 @@ Most recent event comes first
     - Created `bin/manager` and `bin/language` directories.
     - Created symlinks in `bin/` mapping to `util/sh2py3.sh` for all `.py` files in `manager/` and `language/`.
 - **Files Modified:** `util/sh2py3.sh` [NEW], `bin/` directories [NEW].
+
+### Fix: Chat Initialization & Internal Blocking
+- status: active
+<!-- content -->
+**Date:** 2026-01-30
+**AI Assistant:** Antigravity
+**Summary:** Resolved a critical issue where the Chatbot became unresponsive due to cached initialization failures.
+- **Goal:** Restore chatbot functionality and prevent silent failures.
+- **Issue:** `UnifiedEngine` initialization failure (e.g., due to TypeErrors) led to `st.session_state.unified_engine` being set to `None`. Subsequent runs saw the key existed and assumed initialization was complete, blocking further attempts.
+- **Fix:** Updated `src/components/chat.py` to retry initialization if the engine is `None`.
+- **Architectural Insight:** Internal operations (like engine init) can block the entire chat flow if exceptions are swallowed or caching is too aggressive.
+- **Files Modified:** `src/components/chat.py`, `src/core/document_ingestion.py` (fixed signature mismatch).
