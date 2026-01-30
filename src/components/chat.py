@@ -36,25 +36,34 @@ def get_llm_func():
         return gemini_call
     return None
 
-@st.cache_resource(show_spinner="Initializing Unified Engine...")
-def get_engine_instance():
-    """Cached Unified Engine instance."""
+def get_engine_instance(use_vector: bool, use_db: bool, use_graph: bool, use_llm: bool):
+    """
+    Get Unified Engine instance with dynamic component selection.
+    
+    Note: We do NOT cache the engine object itself because its components change based on toggles.
+    The heavy components (db_conn, vector_store, etc.) are still cached individually.
+    """
     try:
         from src.core.unified_engine import UnifiedEngine
         
         # Get components (cached automatically by their own decorators)
-        db_conn = get_db_connection()
-        try:
-            vector_store = get_vector_store()
-        except Exception:
-            vector_store = None
+        db_conn = get_db_connection() if use_db else None
+        
+        vector_store = None
+        if use_vector:
+            try:
+                vector_store = get_vector_store()
+            except Exception:
+                pass
             
-        try:
-            graph_store = get_graph_store()
-        except Exception:
-            graph_store = None
+        graph_store = None
+        if use_graph:
+            try:
+                graph_store = get_graph_store()
+            except Exception as e:
+                print(f"Graph load error: {e}")
             
-        llm_func = get_llm_func()
+        llm_func = get_llm_func() if use_llm else None
 
         engine = UnifiedEngine(
             vector_store=vector_store,
@@ -62,15 +71,14 @@ def get_engine_instance():
             graph_store=graph_store,
             llm_func=llm_func
         )
-        print("DEBUG: UnifiedEngine initialized successfully (Cached).")
         return engine
     except Exception as e:
         print(f"ERROR: UnifiedEngine initialization failed: {e}")
         return None
 
-def get_unified_engine():
-    """Wrapper to get the cached engine."""
-    return get_engine_instance()
+def get_unified_engine(use_vector=True, use_db=True, use_graph=True, use_llm=True):
+    """Wrapper to get the engine with specific flags."""
+    return get_engine_instance(use_vector, use_db, use_graph, use_llm)
 
 
 def render_chat():
@@ -82,10 +90,20 @@ def render_chat():
     if DatabaseManager().is_in_memory or is_cloud_path:
         st.warning("Cloud Demo Mode: Data will be lost on reboot. For production use, run locally.")
 
-    # Engine mode toggle
-    col1, col2 = st.columns([3, 1])
-    with col2:
-        use_unified = st.toggle("Unified Engine", value=True, help="Use RAG + SQL routing")
+    # Engine components configuration
+    st.sidebar.markdown("### Unified Engine Components")
+    use_vector = st.sidebar.toggle("Vector Store (RAG)", value=True, help="Search documents (ChromaDB)")
+    use_db = st.sidebar.toggle("Structured Data (SQL)", value=True, help="Query database (DuckDB)")
+    use_graph = st.sidebar.toggle("Knowledge Graph", value=True, help="Trace relationships")
+    use_llm = st.sidebar.toggle("LLM Synthesis", value=True, help="Generate answers with Gemini")
+    
+    # Global toggle state (implicitly ON if any component is ON, effectively)
+    # But user asked for a "Unified Engine" toggle that activates if all are on...
+    # Actually simpler: The old "generate_unified_response" will just use these flags.
+    # We can keep a "Mode" switch? 
+    # Let's trust the components toggles. If at least one is ON, we use the engine.
+    
+    use_unified = use_vector or use_db or use_graph
 
     # Display chat messages
     for message in st.session_state.messages:
@@ -115,11 +133,20 @@ def render_chat():
         # Generate response
         with st.chat_message("assistant"):
             if use_unified:
-                response = generate_unified_response(prompt)
+                # Pass the feature flags to the generation function
+                response = generate_unified_response(
+                    prompt, 
+                    use_vector=use_vector, 
+                    use_db=use_db, 
+                    use_graph=use_graph, 
+                    use_llm=use_llm
+                )
             else:
                 response = generate_simple_response(prompt)
 
             st.markdown(response["content"])
+            
+            # ... (rest of function)
 
             # Show metadata
             if response.get("query_type"):
@@ -152,9 +179,9 @@ def render_query_badge(query_type: str):
     st.caption(f"Query type: **{label}**")
 
 
-def generate_unified_response(prompt: str) -> dict:
+def generate_unified_response(prompt: str, use_vector=True, use_db=True, use_graph=True, use_llm=True) -> dict:
     """Generate response using the Unified Engine."""
-    engine = get_unified_engine()
+    engine = get_unified_engine(use_vector, use_db, use_graph, use_llm)
 
     if not engine:
         return {
