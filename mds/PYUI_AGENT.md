@@ -60,6 +60,13 @@ Maintain the visual hierarchy:
 - Keep logic in `src/` modules (e.g., `src/ui/` or `src/core/`) where possible.
 - Keep `app.py` focused on layout and state wiring.
 
+### 5. Integration Verification
+- status: active
+<!-- content -->
+- **Signature Checking**: Before calling a method in `src/core` from the UI, **ALWAYS** check its definition to verify arguments.
+  - *Anti-Pattern*: Adding a new parameter like `source_name` to a call without verifying the receiving method accepts it.
+  - *Pattern*: If new UI features need backend support, update the backend method signature *first*.
+
 ## Common Patterns
 - status: active
 - type: guideline

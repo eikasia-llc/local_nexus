@@ -194,12 +194,13 @@ class DocumentIngester:
         else:
             raise ValueError(f"Unsupported file type: {ext}")
     
-    def ingest_file(self, file_path: str | Path) -> dict:
+    def ingest_file(self, file_path: str | Path, source_name: Optional[str] = None) -> dict:
         """
         Ingest a single file into the vector store.
         
         Args:
             file_path: Path to the file
+            source_name: Optional custom name for the source
             
         Returns:
             Dict with ingestion results
@@ -229,8 +230,10 @@ class DocumentIngester:
                 return {"success": False, "error": "No chunks generated"}
             
             # Prepare metadata
+            final_source_name = source_name if source_name else str(file_path.name)
+            
             base_metadata = {
-                "source": str(file_path.name),
+                "source": final_source_name,
                 "type": file_path.suffix.lower().lstrip('.'),
                 "ingested_at": datetime.now().isoformat(),
                 "full_path": str(file_path.absolute())
@@ -257,7 +260,7 @@ class DocumentIngester:
             
             return {
                 "success": True,
-                "file": str(file_path.name),
+                "file": final_source_name,
                 "chunks": len(chunks),
                 "ids": chunk_ids
             }
