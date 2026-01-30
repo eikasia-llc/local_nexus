@@ -24,10 +24,13 @@ def get_graph_store():
 def get_llm_func():
     """Cached LLM function."""
     import google.generativeai as genai
-    from src.core.llm import init_gemini
+    from src.core.llm import init_gemini, DEFAULT_MODEL
+    import os
+    
     if init_gemini():
         def gemini_call(prompt: str) -> str:
-            model = genai.GenerativeModel('gemini-flash-latest')
+            model_name = os.getenv("GEMINI_MODEL", DEFAULT_MODEL)
+            model = genai.GenerativeModel(model_name)
             response = model.generate_content(prompt)
             return response.text
         return gemini_call

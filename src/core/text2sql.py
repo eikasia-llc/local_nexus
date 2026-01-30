@@ -360,13 +360,15 @@ def create_gemini_sql_generator() -> Callable[[str], str]:
     Returns:
         Function that takes a prompt and returns LLM response
     """
-    from src.core.llm import init_gemini
+    from src.core.llm import init_gemini, DEFAULT_MODEL
     import google.generativeai as genai
+    import os
 
     init_gemini()
 
     def generate(prompt: str) -> str:
-        model = genai.GenerativeModel('gemini-flash-latest')
+        model_name = os.getenv("GEMINI_MODEL", DEFAULT_MODEL)
+        model = genai.GenerativeModel(model_name)
         response = model.generate_content(prompt)
         return response.text
 

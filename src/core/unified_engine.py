@@ -441,28 +441,29 @@ ANSWER:"""
     ) -> EngineResponse:
         """
         End-to-end query processing.
-
-        Args:
-            question: User's natural language question
-            top_k: Number of results per source
-            force_type: Override query classification
-            return_sources: Include source details in response
-
-        Returns:
-            EngineResponse with answer, sources, and metadata
         """
+        import time
+        start_t = time.time()
+        print(f"DEBUG: Engine.query start: '{question}'")
         try:
             # Get decomposed queries for reporting
+            print("DEBUG: Decomposing query...")
             decomposed = list(self.decompose_query(question))
+            print(f"DEBUG: Decomposed into {len(decomposed)} sub-queries")
 
             # Retrieve
+            print("DEBUG: Starting retrieval...")
             query_type, results = self.retrieve(question, top_k, force_type)
+            print(f"DEBUG: Retrieval done. Type: {query_type}, Results: {len(results)}")
 
             # Assemble context
             context = self._assemble_context(results)
+            print(f"DEBUG: Context assembled ({len(context)} chars)")
 
             # Generate answer
+            print("DEBUG: Generating answer with LLM...")
             answer = self._generate_answer(question, context, query_type)
+            print(f"DEBUG: Answer generated in {time.time() - start_t:.2f}s")
 
             # Extract SQL if present
             sql_query = None
@@ -480,6 +481,9 @@ ANSWER:"""
             )
 
         except Exception as e:
+            print(f"ERROR: Engine.query failed: {e}")
+            import traceback
+            traceback.print_exc()
             return EngineResponse(
                 answer="",
                 query_type="error",
@@ -558,12 +562,15 @@ def create_engine_from_defaults(
     llm_func = None
     if use_gemini:
         try:
-            from src.core.llm import init_gemini
+            from src.core.llm import init_gemini, DEFAULT_MODEL
             import google.generativeai as genai
+            import os
 
             if init_gemini():
                 def gemini_call(prompt: str) -> str:
-                    model = genai.GenerativeModel('gemini-flash-latest')
+                    # Respect env var if set, else use default safe model
+                    model_name = os.getenv("GEMINI_MODEL", DEFAULT_MODEL)
+                    model = genai.GenerativeModel(model_name)
                     response = model.generate_content(prompt)
                     return response.text
 

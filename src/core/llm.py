@@ -2,12 +2,24 @@ import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 
+DEFAULT_MODEL = "gemini-2.0-flash-lite"
+
 def init_gemini():
-    """Initializes the Gemini API with the key from environment variables."""
+    """Initializes the Gemini API with the key from environment variables or Streamlit secrets."""
+    # 1. Try environment variables
     load_dotenv()
     api_key = os.getenv("GEMINI_API_KEY")
+    
+    # 2. Try Streamlit secrets (if available)
     if not api_key:
-        print("Warning: GEMINI_API_KEY not found in environment variables.")
+        try:
+            import streamlit as st
+            api_key = st.secrets.get("GEMINI_API_KEY")
+        except (ImportError, FileNotFoundError):
+            pass
+
+    if not api_key:
+        print("Warning: GEMINI_API_KEY not found in environment or secrets.")
         return False
     
     genai.configure(api_key=api_key)
@@ -23,7 +35,7 @@ def get_gemini_response(messages) -> str:
                          We need to convert formats.
     """
     try:
-        model = genai.GenerativeModel('gemini-flash-latest')
+        model = genai.GenerativeModel(os.getenv("GEMINI_MODEL", DEFAULT_MODEL))
         
         # Convert Streamlit history to Gemini history
         # Streamlit: [{"role": "user", "content": "hi"}, {"role": "assistant", "content": "hello"}]
