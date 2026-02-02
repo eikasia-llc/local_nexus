@@ -297,7 +297,7 @@ If no decomposition needed, return the original question."""
             words = question.split()
             potential_entities = [
                 w.strip('.,?!') for w in words
-                if w[0].isupper() and len(w) > 1
+                if len(w) > 1 and w[0].isupper()  # Check length FIRST to avoid IndexError
             ]
 
             if not potential_entities:

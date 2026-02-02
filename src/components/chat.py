@@ -94,7 +94,7 @@ def render_chat():
     st.sidebar.markdown("### Unified Engine Components")
     use_vector = st.sidebar.toggle("Vector Store (RAG)", value=True, help="Search documents (ChromaDB)")
     use_db = st.sidebar.toggle("Structured Data (SQL)", value=True, help="Query database (DuckDB)")
-    use_graph = st.sidebar.toggle("Knowledge Graph", value=True, help="Trace relationships")
+    use_graph = st.sidebar.toggle("Relational Data", value=True, help="Network relationships")
     use_llm = st.sidebar.toggle("LLM Synthesis", value=True, help="Generate answers with Gemini")
     
     # Global toggle state (implicitly ON if any component is ON, effectively)

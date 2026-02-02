@@ -9,7 +9,7 @@ def render_sidebar():
         st.title("Local Nexus")
 
         # Tabs for different data types
-        tab1, tab2, tab3 = st.tabs(["Tables", "Documents", "Graph"])
+        tab1, tab2, tab3 = st.tabs(["Tables", "Documents", "Relations"])
 
         with tab1:
             render_structured_data_section()
